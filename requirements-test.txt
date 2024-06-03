@@ -1,0 +1,7 @@
+# packages needed to run the unit/integration tests
+pytest==7.4.*
+pytest-cov==3.0.*
+pytest-mock==3.12.*
+pytest-asyncio==0.23.*
+# download application packages
+-r requirements.txt

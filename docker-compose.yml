@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+
+  # This part of the Docker Compose file is defining a service named `redis`. Here's what each configuration does:
+  # container_name: redis - This is the name of the container that will be created.
+  # hostname: redis - This is the hostname of the container.
+  # image: redis:alpine - This is the image that will be used to create the container. In this case, we're using the `redis:alpine` image.
+  # volumes: - This is a list of volumes that will be mounted in the container. In this case, we're mounting a volume named `redis-data` to the `/data` directory in the container.
+  # ports: - This is a list of ports that will be exposed by the container. In this case, we're exposing port `6379` on the host machine and mapping it to port `6379` in the container.
+  # healthcheck: - This is a health check configuration that will be used to determine if the container is healthy. In this case, we're using the `redis-cli ping` command to check if the container is healthy.
+  # test: [ 'CMD', 'redis-cli', 'ping' ] - This is the command that will be run to check if the container is healthy.
+  # interval: 30s - This is the interval at which the health check will be run.
+  # timeout: 10s - This is the timeout for the health check.
+  # retries: 3 - This is the number of retries that will be attempted before the container is considered unhealthy.
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: [ 'CMD', 'redis-cli', 'ping' ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # The `web` section in the Docker Compose file is defining a service named `web`. Here's what each configuration does:
+  # build: . - This is the path to the directory that contains the Dockerfile that will be used to build the image for the container.
+  # command: uvicorn app.main:app --reload --workers 4 --host
+  # ports: - This is a list of ports that will be exposed by the container. In this case, we're exposing port `8004` on the host machine and mapping it to port `8000` in the container.
+  # environment: - This is a list of environment variables that will be set in the container. In this case, we're setting the `DATABASE_URL` environment variable.
+  # DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/foo - This is the connection string that will be used to connect to the PostgreSQL database.
+  # depends_on: - This is a list of services that the `web` service depends on. In this case, the `web` service depends on the `db` service.
+  web:
+    build: .
+    # The command `uvicorn app.main:app --reload --workers 4 --host 0.0.0.0 --port 8000` is used to start the Uvicorn ASGI server with the specified configurations:
+    # app.main:app - This is the path to the ASGI application that will be run by the Uvicorn server.
+    # --reload - This flag enables auto-reloading of the server when the source code changes.
+    # --workers 4 - This flag specifies the number of worker processes that will be used by the server.
+    # --host - This flag specifies the host that the server will listen on
+    # --port 8000 - This flag specifies the port that the server will listen on.
+    command: uvicorn app.main:app --reload --workers 4 --host 0.0.0.0 --port 8000
+    ports:
+      - 8000:8000
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/foo
+    depends_on:
+      - db
+
+  # The `db` service in the Docker Compose file is defining a PostgreSQL database service. Here's what each configuration does:
+  # container_name: db - This is the name of the container that will be created.
+  # image: postgres:15.3 - This is the image that will be used to create the container. In this case, we're using the `postgres:15.3` image.
+  # ports: - This is a list of ports that will be exposed by the container. In this case, we're exposing port `5432` on the host machine and mapping it to port `5432` in the container.
+  # environment: - This is a list of environment variables that will be set in the container. In this case, we're setting the `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` environment variables.
+  # POSTGRES_USER=postgres - This is the username that will be used to connect to the PostgreSQL database.
+  # POSTGRES_PASSWORD=postgres - This is the password that will be used to connect to the PostgreSQL database.
+  # POSTGRES_DB=foo - This is the name of the database that will be created in the PostgreSQL database.
+  db:
+    image: postgres:15.3
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=foo
+
+volumes:
+  redis-data:
