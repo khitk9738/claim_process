@@ -1,4 +1,4 @@
-# claims-service
+## Claims Process
 This project is intended to be used for Python API projects.
 1. **claim_process** transforms a JSON payload representing a single claim input with multiple lines and stores it into a RDB.
    - An example input (in CSV format) - *claim_1234.csv* is provided. Note that the names are not consistent in capitalization.
@@ -7,6 +7,47 @@ This project is intended to be used for Python API projects.
 *“net fee” = “provider fees” + “member coinsurance” + “member copay” - “Allowed fees”* (note again that the names are not consistent in capitalization).
 4. A downstream service, **payments**, will consume *“net fee”* computed by **claim_process**.
 5. Implement an endpoint that returns the top 10 provider_npis by net fees generated. The endpoint should be optimized for performance, and the you should explain the data structure and algorithm used to compute the top 10 provider_npis. It would be good to have a rate limiter to this api probably 10 req/min.
+
+
+<p align="center">
+  <a href="">
+    <img src="docs/images/sqlmodelboilerplate.png" alt="Purple Rocket with FastAPI Logo as its window. There is a word FAST written" width="35%" height="auto">
+  </a>
+</p>
+
+<p align="center">
+  <a href="">
+      <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  </a>
+  <a href="https://fastapi.tiangolo.com">
+      <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI">
+  </a>
+  <a href="https://www.postgresql.org">
+      <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  </a>
+  <a href="https://redis.io">
+      <img src="https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=fff&style=for-the-badge" alt="Redis">
+  </a>
+  <a href="https://docs.docker.com/compose/">
+      <img src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff&style=for-the-badge" alt="Docker">
+  </a>
+  <a href="https://nginx.org/en/">
+      <img src="https://img.shields.io/badge/NGINX-009639?logo=nginx&logoColor=fff&style=for-the-badge" alt=NGINX>
+  </a>
+</p>
+
+##  About
+
+**FastAPI boilerplate** creates an extendable async API using FastAPI, SQLModel and PostgreSQL:
+
+- [`FastAPI`](https://fastapi.tiangolo.com): modern Python web framework for building APIs
+- [`SQLModel`](https://sqlmodel.tiangolo.com): SQL databases in Python, designed for simplicity, compatibility, and robustness.
+- [`PostgreSQL`](https://www.postgresql.org): The World's Most Advanced Open Source Relational Database
+- [`Redis`](https://redis.io): Open source, in-memory data store used by millions as a cache, message broker and more.
+- [`ARQ`](https://arq-docs.helpmanual.io) Job queues and RPC in python with asyncio and redis.
+- [`Docker Compose`](https://docs.docker.com/compose/) With a single command, create and start all the services from your configuration.
+- [`NGINX`](https://nginx.org/en/) High-performance low resource consumption web server used for Reverse Proxy and Load Balancing.
+
 
 ## Prerequisites
 
