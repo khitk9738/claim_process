@@ -258,6 +258,85 @@ async def get_immutable_data():
     return {"success": True, "message": "this data can be cached indefinitely"}
 ```
 
+## Running with NGINX
+
+NGINX is a high-performance web server, known for its stability, rich feature set, simple configuration, and low resource consumption. NGINX acts as a reverse proxy, that is, it receives client requests, forwards them to the FastAPI server (running via Uvicorn or Gunicorn), and then passes the responses back to the clients.
+
+To run with NGINX, you start by uncommenting the following part in your `docker-compose.yml`:
+
+```python
+# docker-compose.yml
+
+...
+# -------- uncomment to run with nginx --------
+# nginx:
+#   image: nginx:latest
+#   ports:
+#     - "80:80"
+#   volumes:
+#     - ./default.conf:/etc/nginx/conf.d/default.conf
+#   depends_on:
+#     - web
+...
+```
+
+Which should be changed to:
+
+```YAML
+# docker-compose.yml
+
+...
+  #-------- uncomment to run with nginx --------
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+...
+```
+
+Then comment the following part:
+
+```YAML
+# docker-compose.yml
+
+services:
+  web:
+    ...
+    # -------- Both of the following should be commented to run with nginx --------
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+```
+
+Which becomes:
+
+```YAML
+# docker-compose.yml
+
+services:
+  web:
+    ...
+    # -------- Both of the following should be commented to run with nginx --------
+    # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    # command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000
+```
+
+Then pick the way you want to run (uvicorn or gunicorn managing uvicorn workers) in `Dockerfile`.
+The one you want should be uncommented, comment the other one.
+
+```Dockerfile
+# Dockerfile
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker". "-b", "0.0.0.0:8000"]
+```
+
+And finally head to `http://localhost/docs`.
+
+
 ## Top N Keys
 
 This Python function pushes elements onto a heap while ensuring uniqueness based on a specific attribute.
